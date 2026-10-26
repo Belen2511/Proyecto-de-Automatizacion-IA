@@ -1,0 +1,1216 @@
+{
+  "name": "Construcción de tu Ecosistema de Automatización",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "n1",
+              "name": "nombre",
+              "type": "string",
+              "value": "={{ ($json.from ? ($json.from.value[0].name || $json.from.value[0].address) : ($json.nombre || $json.Nombre || \"\")).trim() }}"
+            },
+            {
+              "id": "n2",
+              "name": "email",
+              "type": "string",
+              "value": "={{ ($json.from ? $json.from.value[0].address : ($json.email || $json.Email || \"\")).trim().toLowerCase() }}"
+            },
+            {
+              "id": "n3",
+              "name": "telefono",
+              "type": "string",
+              "value": "={{ ($json.from ? \"\" : ($json.telefono || $json[\"Teléfono\"] || \"\")).toString().trim() }}"
+            },
+            {
+              "id": "n4",
+              "name": "mensaje_original",
+              "type": "string",
+              "value": "={{ ($json.from ? ((\"Asunto: \" + ($json.subject || \"\") + \"\\n\" + ($json.text || $json.snippet || \"\")).slice(0, 3000)) : ($json.mensaje || $json.Mensaje || \"\")).trim() }}"
+            },
+            {
+              "id": "n5",
+              "name": "fuente",
+              "type": "string",
+              "value": "={{ $json.from ? \"Mail\" : \"Formulario web\" }}"
+            },
+            {
+              "id": "n6",
+              "name": "empresa",
+              "type": "string",
+              "value": "={{ $json.empresa || $json.Empresa || \"Selva Real Hotelería S.A.\" }}"
+            },
+            {
+              "id": "n7",
+              "name": "fecha_ingreso",
+              "type": "string",
+              "value": "={{ $now.toFormat(\"yyyy-MM-dd\") }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "10cc9763-3e47-4e94-9197-e407732fc91e",
+      "name": "Normalizar datos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -256,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "applT7ThfUMCk3uXv",
+          "cachedResultName": "Construcción de tu Ecosistema de Automatización IA.xlsx"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblKe1WB7m7TdVqx4",
+          "cachedResultName": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nombre": "={{ $json.nombre }}",
+            "Email": "={{ $json.email }}",
+            "Teléfono": "={{ $json.telefono }}",
+            "Mensaje original": "={{ $json.mensaje_original }}",
+            "Canal": "={{ $json.fuente }}",
+            "Empresa": "={{ $json.empresa }}",
+            "Fecha de ingreso": "={{ $json.fecha_ingreso }}",
+            "Estado": "Pendiente"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID Lead",
+              "displayName": "ID Lead",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Teléfono",
+              "displayName": "Teléfono",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje original",
+              "displayName": "Mensaje original",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha de ingreso",
+              "displayName": "Fecha de ingreso",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Aprobado por Humano",
+                  "value": "Aprobado por Humano"
+                },
+                {
+                  "name": "Procesado por IA",
+                  "value": "Procesado por IA"
+                },
+                {
+                  "name": "Pendiente",
+                  "value": "Pendiente"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Categoría IA",
+              "displayName": "Categoría IA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score IA",
+              "displayName": "Score IA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intención detectada",
+              "displayName": "Intención detectada",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Urgencia",
+              "displayName": "Urgencia",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Justificación IA",
+              "displayName": "Justificación IA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Respuesta sugerida",
+              "displayName": "Respuesta sugerida",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Comentarios del revisor",
+              "displayName": "Comentarios del revisor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha de aprobación",
+              "displayName": "Fecha de aprobación",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Empresa",
+              "displayName": "Empresa",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Selva Real Hotelería S.A.",
+                  "value": "Selva Real Hotelería S.A."
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Canal",
+              "displayName": "Canal",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Mail",
+                  "value": "Mail"
+                },
+                {
+                  "name": "Formulario web",
+                  "value": "Formulario web"
+                },
+                {
+                  "name": "Referido",
+                  "value": "Referido"
+                },
+                {
+                  "name": "WhatsApp",
+                  "value": "WhatsApp"
+                },
+                {
+                  "name": "Booking.com",
+                  "value": "Booking.com"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Responsable",
+              "displayName": "Responsable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Valeria Ríos",
+                  "value": "Valeria Ríos"
+                },
+                {
+                  "name": "Camila Ortiz",
+                  "value": "Camila Ortiz"
+                },
+                {
+                  "name": "Tomás Benítez",
+                  "value": "Tomás Benítez"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Log_IA",
+              "displayName": "Log_IA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Thread ID",
+              "displayName": "Thread ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Asunto",
+              "displayName": "Asunto",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha de envío",
+              "displayName": "Fecha de envío",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "id": "562432df-2e6a-4f6a-acfa-0a5d8ac8c5f9",
+      "name": "Crear lead (Pendiente)",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -32,
+        -224
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "l86etZ7zzfNW5r6c",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "applT7ThfUMCk3uXv",
+          "cachedResultName": "Construcción de tu Ecosistema de Automatización IA.xlsx"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblNfFkjzUgRX09Xf",
+          "cachedResultName": "Criterios_vip"
+        },
+        "filterByFormula": "{Activo}",
+        "options": {}
+      },
+      "id": "78692eda-7fb4-416f-b4f7-5b9c2ca955e9",
+      "name": "Leer criterios VIP",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        -224
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "l86etZ7zzfNW5r6c",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "criterios",
+        "options": {}
+      },
+      "id": "684434d4-5c77-4a6a-9f51-222997f0f7bc",
+      "name": "Agrupar criterios",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        416,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Lead a clasificar:\n- nombre: {{ $(\"Normalizar datos\").item.json.nombre }}\n- email: {{ $(\"Normalizar datos\").item.json.email }}\n- telefono: {{ $(\"Normalizar datos\").item.json.telefono }}\n- empresa: {{ $(\"Normalizar datos\").item.json.empresa }}\n- fuente: {{ $(\"Normalizar datos\").item.json.fuente }}\n- fecha_ingreso: {{ $(\"Normalizar datos\").item.json.fecha_ingreso }}\n- mensaje_original: {{ $(\"Normalizar datos\").item.json.mensaje_original }}\n\nCriterios VIP activos (criterio | peso | descripción):\n{{ ($json.criterios || []).map(c => { const f = c.fields || c; return \"- \" + f[\"Criterio\"] + \" | \" + f[\"Peso\"] + \" | \" + (f[\"Descripción\"] || \"\"); }).join(\"\\n\") }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Sos el Motor Central de Razonamiento de un ecosistema de automatización. Caso de uso: Clasificación de leads VIP.\nReglas (deterministas, sin ambigüedad):\n1. Calculá \"score\" sumando los pesos de los criterios VIP que el mensaje cumple (partí de 0, mínimo 0, máximo 100). Listalos en \"criterios_cumplidos\" con el nombre exacto del criterio.\n2. clasificacion: \"VIP\" si score >= 60, \"Estándar\" si score entre 30 y 59, \"Bajo\" si score < 30.\n3. prioridad: \"Alta\" para VIP o pedidos con fecha cercana, \"Media\" para Estándar, \"Baja\" para el resto.\n4. Si falta nombre, email válido o el mensaje no tiene contenido útil: estado_sugerido = \"Pendiente\" y listá lo que falta en \"datos_faltantes\"; agregá en acciones_recomendadas la solicitud de esos datos. Si no falta nada: estado_sugerido = \"Procesado por IA\" y datos_faltantes = [].\n5. Nunca uses el estado \"Aprobado por Humano\": solo lo asigna una persona.\n6. requiere_aprobacion_humana = true siempre que haya que contactar al cliente, enviar una propuesta o la clasificación sea VIP. Ningún mensaje al cliente se envía sin aprobación humana.\n7. datos_normalizados: teléfono en formato internacional (+54 ... si es Argentina y no trae código de país), email en minúsculas, fecha_ingreso en YYYY-MM-DD, nombre con mayúsculas iniciales. No inventes datos: dejá \"\" si no existen.\n8. respuesta_sugerida: borrador breve, cordial y en español para responder al cliente (si faltan datos, pedilos en el borrador). Es solo un borrador para revisión humana.\n9. justificacion: 1-2 frases explicando el score. intencion: etiqueta corta (p. ej. \"Reserva\", \"Evento o grupo\", \"Consulta general\").\n10. No crees campos nuevos fuera del formato pedido."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "d9f982e3-40a4-4959-aa0d-5fc3d5d27106",
+      "name": "Clasificar lead con IA",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        272,
+        -224
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 4000,
+          "reasoningEffort": "low",
+          "timeout": 60000,
+          "maxRetries": 2
+        }
+      },
+      "id": "833d455d-9845-4d77-9afb-42c782bb05f5",
+      "name": "Modelo IA",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        288,
+        16
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\"type\":\"object\",\"required\":[\"interpretacion\",\"clasificacion\",\"prioridad\",\"estado_sugerido\",\"requiere_aprobacion_humana\",\"datos_normalizados\",\"acciones_recomendadas\",\"score\",\"intencion\",\"criterios_cumplidos\",\"justificacion\",\"respuesta_sugerida\",\"datos_faltantes\"],\"properties\":{\"interpretacion\":{\"type\":\"string\"},\"clasificacion\":{\"type\":\"string\",\"enum\":[\"VIP\",\"Estándar\",\"Bajo\"]},\"prioridad\":{\"type\":\"string\",\"enum\":[\"Alta\",\"Media\",\"Baja\"]},\"estado_sugerido\":{\"type\":\"string\",\"enum\":[\"Pendiente\",\"Procesado por IA\"]},\"requiere_aprobacion_humana\":{\"type\":\"boolean\"},\"datos_normalizados\":{\"type\":\"object\",\"required\":[\"nombre\",\"email\",\"telefono\",\"mensaje_original\",\"fuente\",\"fecha_ingreso\"],\"properties\":{\"nombre\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"telefono\":{\"type\":\"string\"},\"mensaje_original\":{\"type\":\"string\"},\"fuente\":{\"type\":\"string\"},\"fecha_ingreso\":{\"type\":\"string\"}}},\"acciones_recomendadas\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"score\":{\"type\":\"number\"},\"intencion\":{\"type\":\"string\"},\"criterios_cumplidos\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"justificacion\":{\"type\":\"string\"},\"respuesta_sugerida\":{\"type\":\"string\"},\"datos_faltantes\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}"
+      },
+      "id": "eb3b0732-fae8-4a89-bf4e-f317023d4888",
+      "name": "Formato JSON estricto",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "applT7ThfUMCk3uXv",
+          "cachedResultName": "Construcción de tu Ecosistema de Automatización IA.xlsx"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblm0UdZXAYU50bZd",
+          "cachedResultName": "Log_IA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Resultado": "Error",
+            "Respuesta cruda": "={{ JSON.stringify($json) }}",
+            "Lead": "={{ [$(\"Crear lead (Pendiente)\").item.json.id] }}",
+            "Versión del prompt": "v2.0",
+            "Fecha": "={{ $now.toISO() }}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "id": "b6875385-d698-4cf1-8855-20ae91f8ddc1",
+      "name": "Registrar error IA",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        -128
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "l86etZ7zzfNW5r6c",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "applT7ThfUMCk3uXv",
+          "cachedResultName": "Construcción de tu Ecosistema de Automatización IA.xlsx"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblKe1WB7m7TdVqx4",
+          "cachedResultName": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id"
+          ],
+          "value": {
+            "id": "={{ $(\"Crear lead (Pendiente)\").item.json.id }}",
+            "Estado": "={{ $json.output.estado_sugerido === \"Pendiente\" ? \"Pendiente\" : \"Procesado por IA\" }}",
+            "Score IA": "={{ $json.output.score }}",
+            "Categoría IA": "={{ $json.output.clasificacion }}",
+            "Urgencia": "={{ $json.output.prioridad }}",
+            "Intención detectada": "={{ $json.output.intencion }}",
+            "Justificación IA": "={{ $json.output.justificacion }}",
+            "Respuesta sugerida": "={{ $json.output.respuesta_sugerida }}",
+            "Teléfono": "={{ $json.output.datos_normalizados.telefono || $(\"Normalizar datos\").item.json.telefono }}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "id": "0e165845-faa7-45af-8c74-e1455f7fb89b",
+      "name": "Guardar resultado IA en lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        -320
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "l86etZ7zzfNW5r6c",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "applT7ThfUMCk3uXv",
+          "cachedResultName": "Construcción de tu Ecosistema de Automatización IA.xlsx"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblm0UdZXAYU50bZd",
+          "cachedResultName": "Log_IA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Resultado": "OK",
+            "Respuesta cruda": "={{ JSON.stringify($(\"Clasificar lead con IA\").item.json.output) }}",
+            "Lead": "={{ [$(\"Crear lead (Pendiente)\").item.json.id] }}",
+            "Versión del prompt": "v2.0",
+            "Fecha": "={{ $now.toISO() }}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "id": "eb9435fd-b592-4091-a30e-76ce4d1c7afb",
+      "name": "Registrar log IA",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        -320
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "l86etZ7zzfNW5r6c",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $(\"Clasificar lead con IA\").item.json.output.requiere_aprobacion_humana }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $(\"Normalizar datos\").item.json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a33df867-dca4-466b-be4e-b088de88ceb4",
+      "name": "¿Requiere aprobación humana?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1328,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "belenvogeli@gmail.com",
+        "subject": "=[{{ $(\"Clasificar lead con IA\").item.json.output.clasificacion }}] Aprobar respuesta a {{ $(\"Normalizar datos\").item.json.nombre }}",
+        "message": "=Nuevo lead clasificado por IA.\n\nNombre: {{ $(\"Normalizar datos\").item.json.nombre }}\nEmail: {{ $(\"Normalizar datos\").item.json.email }}\nTeléfono: {{ $(\"Clasificar lead con IA\").item.json.output.datos_normalizados.telefono }}\nFuente: {{ $(\"Normalizar datos\").item.json.fuente }}\n\nMensaje: {{ $(\"Normalizar datos\").item.json.mensaje_original }}\n\nClasificación: {{ $(\"Clasificar lead con IA\").item.json.output.clasificacion }} (score {{ $(\"Clasificar lead con IA\").item.json.output.score }}) - Prioridad {{ $(\"Clasificar lead con IA\").item.json.output.prioridad }}\nJustificación: {{ $(\"Clasificar lead con IA\").item.json.output.justificacion }}\nDatos faltantes: {{ ($(\"Clasificar lead con IA\").item.json.output.datos_faltantes || []).join(\", \") || \"ninguno\" }}\n\nRespuesta propuesta al cliente:\n{{ $(\"Clasificar lead con IA\").item.json.output.respuesta_sugerida }}\n\nSi aprobás, se enviará esta respuesta al cliente por Gmail.",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "Aprobar y enviar",
+            "disapproveLabel": "Rechazar"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 2,
+              "resumeUnit": "days"
+            }
+          },
+          "appendAttribution": false
+        }
+      },
+      "id": "8eb6a7b2-1d12-4113-ad2d-e222e5d1511c",
+      "name": "Pedir aprobación por Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        -320
+      ],
+      "webhookId": "8a1afdfb-d5ae-4256-a35c-1f5fce2be973",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uzROkqWvzPM9e9UM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "a1",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "505149b4-6a38-4b7a-a95b-12b9d2ecc5dc",
+      "name": "¿Aprobado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1776,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "belenvogeli@gmail.com",
+        "subject": "=[PRUEBA - para {{ $(\"Normalizar datos\").item.json.email }}] Gracias por tu consulta",
+        "emailType": "text",
+        "message": "={{ $(\"Clasificar lead con IA\").item.json.output.respuesta_sugerida }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "ea0e36d2-2f13-49e6-87c4-492586f4c808",
+      "name": "Enviar respuesta al cliente",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2000,
+        -320
+      ],
+      "webhookId": "2ac4fa87-f739-40c6-8281-1e9c21247f9c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uzROkqWvzPM9e9UM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "applT7ThfUMCk3uXv",
+          "cachedResultName": "Construcción de tu Ecosistema de Automatización IA.xlsx"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblKe1WB7m7TdVqx4",
+          "cachedResultName": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id"
+          ],
+          "value": {
+            "Comentarios del revisor": "Aprobado por Romina Vögeli",
+            "Estado": "Aprobado por Humano",
+            "Fecha de aprobación": "={{ $now.toFormat(\"yyyy-MM-dd\") }}",
+            "Fecha de envío": "={{ $now.toISO() }}",
+            "id": "={{ $(\"Crear lead (Pendiente)\").item.json.id }}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "id": "a0f1f3d5-5046-4ca8-9a07-b5c2d42a8179",
+      "name": "Marcar Aprobado por Humano",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2224,
+        -320
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "l86etZ7zzfNW5r6c",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Consulta de reservas - Selva Real Hotelería",
+        "formDescription": "Dejanos tu consulta y te respondemos a la brevedad.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre",
+              "fieldName": "nombre",
+              "placeholder": "Tu nombre y apellido",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "fieldName": "email",
+              "placeholder": "tu@email.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Teléfono",
+              "fieldName": "telefono",
+              "placeholder": "+54 9 ..."
+            },
+            {
+              "fieldLabel": "Empresa",
+              "fieldType": "dropdown",
+              "fieldName": "empresa",
+              "defaultValue": "Selva Real Hotelería S.A.",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Selva Real Hotelería S.A."
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Mensaje",
+              "fieldType": "textarea",
+              "fieldName": "mensaje",
+              "placeholder": "Contanos qué necesitás: fechas, cantidad de personas, tipo de evento...",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Enviar consulta",
+          "path": "leads-vip",
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "¡Gracias! Recibimos tu consulta y te vamos a responder pronto."
+            }
+          }
+        }
+      },
+      "id": "ecdf5156-4507-47d7-ab8c-ee16325ca6e2",
+      "name": "Nuevo lead (Formulario)",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -544,
+        -448
+      ],
+      "webhookId": "383a9013-b812-412b-b3fa-0756360fecad"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "in:inbox -subject:\"Aprobar respuesta a\" -category:promotions -category:social -category:updates",
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "id": "9b02db6c-a1bb-4a7b-a25d-2eee573914ec",
+      "name": "Nuevo lead (Mail)",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -544,
+        -256
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uzROkqWvzPM9e9UM",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Normalizar datos": {
+      "main": [
+        [
+          {
+            "node": "Crear lead (Pendiente)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear lead (Pendiente)": {
+      "main": [
+        [
+          {
+            "node": "Leer criterios VIP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer criterios VIP": {
+      "main": [
+        [
+          {
+            "node": "Agrupar criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agrupar criterios": {
+      "main": [
+        [
+          {
+            "node": "Clasificar lead con IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificar lead con IA": {
+      "main": [
+        [
+          {
+            "node": "Guardar resultado IA en lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar error IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modelo IA": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Clasificar lead con IA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formato JSON estricto": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Clasificar lead con IA",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar resultado IA en lead": {
+      "main": [
+        [
+          {
+            "node": "Registrar log IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Requiere aprobación humana?": {
+      "main": [
+        [
+          {
+            "node": "Pedir aprobación por Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pedir aprobación por Gmail": {
+      "main": [
+        [
+          {
+            "node": "¿Aprobado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Aprobado?": {
+      "main": [
+        [
+          {
+            "node": "Enviar respuesta al cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar respuesta al cliente": {
+      "main": [
+        [
+          {
+            "node": "Marcar Aprobado por Humano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nuevo lead (Formulario)": {
+      "main": [
+        [
+          {
+            "node": "Normalizar datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nuevo lead (Mail)": {
+      "main": [
+        [
+          {
+            "node": "Normalizar datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar log IA": {
+      "main": [
+        [
+          {
+            "node": "¿Requiere aprobación humana?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "versionId": "f05345d7-c779-44c8-90fe-6cff3e8094e0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "2934fb22cc3502caf294a343d0ba3efcfb1def84fab3bfe56b653b5b52720138"
+  },
+  "nodeGroups": [
+    {
+      "id": "422c46d8-f2d3-44ff-a1cf-e1bc4dffe86c",
+      "name": "Registrar lead entrante",
+      "nodeIds": [
+        "10cc9763-3e47-4e94-9197-e407732fc91e",
+        "562432df-2e6a-4f6a-acfa-0a5d8ac8c5f9",
+        "78692eda-7fb4-416f-b4f7-5b9c2ca955e9",
+        "684434d4-5c77-4a6a-9f51-222997f0f7bc"
+      ],
+      "description": "Normaliza el lead (formulario o mail), lo crea como Pendiente y trae los criterios VIP activos"
+    },
+    {
+      "id": "ef1a0266-a3cc-40ce-8171-54cadf27715f",
+      "name": "Clasificar lead",
+      "nodeIds": [
+        "d9f982e3-40a4-4959-aa0d-5fc3d5d27106",
+        "833d455d-9845-4d77-9afb-42c782bb05f5",
+        "eb3b0732-fae8-4a89-bf4e-f317023d4888"
+      ],
+      "description": "Puntúa el lead según los criterios VIP y devuelve el JSON estricto con borrador de respuesta"
+    },
+    {
+      "id": "0836bad2-88c7-4571-b369-2ebbcffc5bb1",
+      "name": "Guardar resultado",
+      "nodeIds": [
+        "0e165845-faa7-45af-8c74-e1455f7fb89b",
+        "eb9435fd-b592-4091-a30e-76ce4d1c7afb"
+      ],
+      "description": "Actualiza el lead a Procesado por IA y deja trazabilidad en el log"
+    },
+    {
+      "id": "e8ecca69-65bb-4323-b440-9c2b4b9590f8",
+      "name": "Aprobación humana",
+      "nodeIds": [
+        "a33df867-dca4-466b-be4e-b088de88ceb4",
+        "8eb6a7b2-1d12-4113-ad2d-e222e5d1511c",
+        "505149b4-6a38-4b7a-a95b-12b9d2ecc5dc",
+        "ea0e36d2-2f13-49e6-87c4-492586f4c808",
+        "a0f1f3d5-5046-4ca8-9a07-b5c2d42a8179"
+      ],
+      "description": "Un humano aprueba por email; solo entonces se contacta al cliente y el lead pasa a Aprobado"
+    },
+    {
+      "id": "92cf27ce-866b-40dd-9001-75b69e64447a",
+      "name": "Gestionar fallo de IA",
+      "nodeIds": [
+        "b6875385-d698-4cf1-8855-20ae91f8ddc1"
+      ],
+      "description": "Si la IA falla, registra el error en el log; el lead queda Pendiente"
+    }
+  ],
+  "id": "SY31u1KQrKiI9eGi",
+  "tags": []
+}

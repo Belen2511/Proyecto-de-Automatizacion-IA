@@ -1,0 +1,8 @@
+Criterio,Descripción,Peso,Activo
+Evento o grupo grande,"Casamiento, congreso, evento corporativo o grupo de 10 o más habitaciones",30,checked
+Empresa o agencia,Consulta de una empresa o agencia de turismo que puede generar volumen,20,checked
+Estadía larga,Estadía de 7 noches o más,15,checked
+Temporada alta,"Fechas en verano, Semana Santa, vacaciones de invierno o fines de semana largos",15,checked
+Presupuesto explícito,Menciona un monto o presupuesto disponible,15,checked
+Cliente recurrente,Ya se alojó anteriormente en el hotel,10,checked
+Consulta general,Pregunta por precios o servicios sin fechas ni intención clara de reservar,-20,checked
