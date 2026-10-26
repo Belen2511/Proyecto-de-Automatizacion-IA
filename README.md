@@ -8,7 +8,7 @@ de un hotel, las clasifica según criterios VIP y pide aprobación humana antes 
 ## Links
 - Workflow n8n: https://romy-2508.app.n8n.cloud/workflow/SY31u1KQrKiI9eGi
 - Base Airtable: https://airtable.com/applT7ThfUMCk3uXv
-- Video demo: 
+- Video demo: https://drive.google.com/file/d/10F_Nn1i_KBCZHOTb2qDxKwgxGgjUFzgl/view?usp=sharing
 
 ## Archivos
 - `Pasos_Proyecto_Automatizacion_IA.pdf`: documentación paso a paso con capturas
