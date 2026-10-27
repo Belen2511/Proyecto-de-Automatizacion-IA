@@ -46,6 +46,18 @@
               "name": "fecha_ingreso",
               "type": "string",
               "value": "={{ $now.toFormat(\"yyyy-MM-dd\") }}"
+            },
+            {
+              "id": "n8",
+              "name": "thread_id",
+              "type": "string",
+              "value": "={{ $json.threadId || \"\" }}"
+            },
+            {
+              "id": "n9",
+              "name": "asunto",
+              "type": "string",
+              "value": "={{ $json.from ? ($json.subject || \"\") : \"Formulario web\" }}"
             }
           ]
         },
@@ -57,7 +69,7 @@
       "typeVersion": 3.5,
       "position": [
         -256,
-        -224
+        -976
       ]
     },
     {
@@ -86,7 +98,9 @@
             "Canal": "={{ $json.fuente }}",
             "Empresa": "={{ $json.empresa }}",
             "Fecha de ingreso": "={{ $json.fecha_ingreso }}",
-            "Estado": "Pendiente"
+            "Estado": "Pendiente",
+            "Thread ID": "={{ $json.thread_id }}",
+            "Asunto": "={{ $json.asunto }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -406,7 +420,7 @@
       "typeVersion": 2.2,
       "position": [
         -32,
-        -224
+        -976
       ],
       "credentials": {
         "airtableOAuth2Api": {
@@ -440,7 +454,7 @@
       "typeVersion": 2.2,
       "position": [
         192,
-        -224
+        -976
       ],
       "executeOnce": true,
       "alwaysOutputData": true,
@@ -463,7 +477,7 @@
       "typeVersion": 1,
       "position": [
         416,
-        -224
+        -976
       ]
     },
     {
@@ -471,6 +485,7 @@
         "promptType": "define",
         "text": "=Lead a clasificar:\n- nombre: {{ $(\"Normalizar datos\").item.json.nombre }}\n- email: {{ $(\"Normalizar datos\").item.json.email }}\n- telefono: {{ $(\"Normalizar datos\").item.json.telefono }}\n- empresa: {{ $(\"Normalizar datos\").item.json.empresa }}\n- fuente: {{ $(\"Normalizar datos\").item.json.fuente }}\n- fecha_ingreso: {{ $(\"Normalizar datos\").item.json.fecha_ingreso }}\n- mensaje_original: {{ $(\"Normalizar datos\").item.json.mensaje_original }}\n\nCriterios VIP activos (criterio | peso | descripción):\n{{ ($json.criterios || []).map(c => { const f = c.fields || c; return \"- \" + f[\"Criterio\"] + \" | \" + f[\"Peso\"] + \" | \" + (f[\"Descripción\"] || \"\"); }).join(\"\\n\") }}",
         "hasOutputParser": true,
+        "needsFallback": true,
         "messages": {
           "messageValues": [
             {
@@ -485,8 +500,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        272,
-        -224
+        320,
+        -976
       ],
       "retryOnFail": true,
       "maxTries": 2,
@@ -508,20 +523,13 @@
         }
       },
       "id": "833d455d-9845-4d77-9afb-42c782bb05f5",
-      "name": "Modelo IA",
+      "name": "OpenAI (principal)",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        288,
-        16
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": null,
-          "name": "Gateway credits",
-          "__aiGatewayManaged": true
-        }
-      }
+        264,
+        -744
+      ]
     },
     {
       "parameters": {
@@ -533,8 +541,8 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        416,
-        16
+        520,
+        -744
       ]
     },
     {
@@ -560,7 +568,8 @@
             "Respuesta cruda": "={{ JSON.stringify($json) }}",
             "Lead": "={{ [$(\"Crear lead (Pendiente)\").item.json.id] }}",
             "Versión del prompt": "v2.0",
-            "Fecha": "={{ $now.toISO() }}"
+            "Fecha": "={{ $now.toISO() }}",
+            "Mensaje de error": "={{ $json.error ? ($json.error.message || JSON.stringify($json.error)) : \"Error en el nodo de IA\" }}"
           }
         },
         "options": {
@@ -573,7 +582,7 @@
       "typeVersion": 2.2,
       "position": [
         800,
-        -128
+        -880
       ],
       "credentials": {
         "airtableOAuth2Api": {
@@ -625,7 +634,7 @@
       "typeVersion": 2.2,
       "position": [
         800,
-        -320
+        -1072
       ],
       "credentials": {
         "airtableOAuth2Api": {
@@ -670,7 +679,7 @@
       "typeVersion": 2.2,
       "position": [
         1024,
-        -320
+        -1072
       ],
       "credentials": {
         "airtableOAuth2Api": {
@@ -720,7 +729,7 @@
       "typeVersion": 2.2,
       "position": [
         1328,
-        -320
+        -976
       ]
     },
     {
@@ -752,7 +761,7 @@
       "typeVersion": 2.2,
       "position": [
         1552,
-        -320
+        -976
       ],
       "webhookId": "8a1afdfb-d5ae-4256-a35c-1f5fce2be973",
       "credentials": {
@@ -793,13 +802,13 @@
       "typeVersion": 2.2,
       "position": [
         1776,
-        -320
+        -976
       ]
     },
     {
       "parameters": {
-        "sendTo": "belenvogeli@gmail.com",
-        "subject": "=[PRUEBA - para {{ $(\"Normalizar datos\").item.json.email }}] Gracias por tu consulta",
+        "sendTo": "={{ $(\"Normalizar datos\").item.json.email }}",
+        "subject": "={{ $(\"Normalizar datos\").item.json.fuente === \"Mail\" ? \"Re: \" + $(\"Normalizar datos\").item.json.asunto : \"Gracias por tu consulta - Selva Real Hotelería\" }}",
         "emailType": "text",
         "message": "={{ $(\"Clasificar lead con IA\").item.json.output.respuesta_sugerida }}",
         "options": {
@@ -812,7 +821,7 @@
       "typeVersion": 2.2,
       "position": [
         2000,
-        -320
+        -1072
       ],
       "webhookId": "2ac4fa87-f739-40c6-8281-1e9c21247f9c",
       "credentials": {
@@ -861,7 +870,7 @@
       "typeVersion": 2.2,
       "position": [
         2224,
-        -320
+        -1072
       ],
       "credentials": {
         "airtableOAuth2Api": {
@@ -872,6 +881,7 @@
     },
     {
       "parameters": {
+        "authentication": "n8nUserAuth",
         "formTitle": "Consulta de reservas - Selva Real Hotelería",
         "formDescription": "Dejanos tu consulta y te respondemos a la brevedad.",
         "formFields": {
@@ -933,7 +943,7 @@
       "typeVersion": 2.6,
       "position": [
         -544,
-        -448
+        -1200
       ],
       "webhookId": "383a9013-b812-412b-b3fa-0756360fecad"
     },
@@ -948,7 +958,7 @@
         },
         "simple": false,
         "filters": {
-          "q": "in:inbox -subject:\"Aprobar respuesta a\" -category:promotions -category:social -category:updates",
+          "q": "to:belenvogeli+leads@gmail.com in:inbox after:2026/10/27 -subject:\"Aprobar respuesta a\" -subject:\"Gracias por tu consulta\" -subject:\"[PRUEBA\" -category:promotions -category:social -category:updates",
           "readStatus": "unread"
         },
         "options": {}
@@ -959,7 +969,7 @@
       "typeVersion": 1.4,
       "position": [
         -544,
-        -256
+        -1008
       ],
       "credentials": {
         "gmailOAuth2": {
@@ -967,6 +977,150 @@
           "name": "Gmail account"
         }
       }
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "applT7ThfUMCk3uXv"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblKe1WB7m7TdVqx4"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id"
+          ],
+          "value": {
+            "Comentarios del revisor": "Rechazado por Romina Vögeli",
+            "Fecha de aprobación": "={{ $now.toFormat(\"yyyy-MM-dd\") }}",
+            "id": "={{ $(\"Crear lead (Pendiente)\").item.json.id }}"
+          }
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "id": "863f0990-538f-4450-b928-7b4f478ad33a",
+      "name": "Registrar rechazo",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2000,
+        -880
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "l86etZ7zzfNW5r6c",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "cachedResultName": "Claude Sonnet 5",
+          "mode": "list",
+          "value": "claude-sonnet-5"
+        },
+        "options": {
+          "maxTokensToSample": 500
+        }
+      },
+      "id": "b3dea5f7-fc13-4d1f-94ce-2a21013e30cb",
+      "name": "Claude (respaldo)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        392,
+        -744
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "LPzT64ksLC1j6NPQ",
+          "name": "Anthropic account 4"
+        }
+      }
+    },
+    {
+      "id": "bd28ecac-d8a1-4e56-9e65-719c365749ff",
+      "name": "¿Tiene teléfono?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2448,
+        -1072
+      ],
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "w1",
+              "leftValue": "={{ ($(\"Clasificar lead con IA\").item.json.output.datos_normalizados.telefono || $(\"Normalizar datos\").item.json.telefono || \"\").toString().replace(/\\D/g, \"\") }}",
+              "operator": {
+                "operation": "notEmpty",
+                "singleValue": true,
+                "type": "string"
+              },
+              "rightValue": ""
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          }
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a62e5f60-00a3-43ed-be01-c11c37714211",
+      "name": "Enviar WhatsApp al cliente",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        2672,
+        -1168
+      ],
+      "parameters": {
+        "components": {
+          "component": [
+            {
+              "bodyParameters": {
+                "parameter": [
+                  {
+                    "text": "={{ $(\"Normalizar datos\").item.json.nombre }}",
+                    "type": "text"
+                  },
+                  {
+                    "text": "={{ $(\"Clasificar lead con IA\").item.json.output.respuesta_sugerida.replace(/\\s+/g, \" \").slice(0, 900) }}",
+                    "type": "text"
+                  }
+                ]
+              },
+              "type": "body"
+            }
+          ]
+        },
+        "operation": "sendTemplate",
+        "phoneNumberId": "COMPLETAR_PHONE_NUMBER_ID",
+        "recipientPhoneNumber": "={{ (() => { const d = ($(\"Clasificar lead con IA\").item.json.output.datos_normalizados.telefono || $(\"Normalizar datos\").item.json.telefono || \"\").toString().replace(/\\D/g, \"\"); return \"+\" + (d.startsWith(\"54\") ? d : \"54\" + d); })() }}",
+        "resource": "message",
+        "template": "respuesta_consulta|es_AR"
+      },
+      "notes": "Requiere conectar la credencial de WhatsApp Business Cloud (Meta) y cargar el Phone Number ID. Plantilla aprobada: respuesta_consulta (es_AR) con {{1}} = nombre y {{2}} = respuesta.",
+      "onError": "continueRegularOutput",
+      "webhookId": "ab89e552-6674-42dc-b755-b02bf57c384d"
     }
   ],
   "pinData": {},
@@ -1033,17 +1187,6 @@
         ]
       ]
     },
-    "Modelo IA": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Clasificar lead con IA",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Formato JSON estricto": {
       "ai_outputParser": [
         [
@@ -1096,6 +1239,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Registrar rechazo",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -1142,6 +1292,50 @@
           }
         ]
       ]
+    },
+    "OpenAI (principal)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Clasificar lead con IA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude (respaldo)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Clasificar lead con IA",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Marcar Aprobado por Humano": {
+      "main": [
+        [
+          {
+            "node": "¿Tiene teléfono?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Tiene teléfono?": {
+      "main": [
+        [
+          {
+            "node": "Enviar WhatsApp al cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1152,7 +1346,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": true
   },
-  "versionId": "f05345d7-c779-44c8-90fe-6cff3e8094e0",
+  "versionId": "c68391dd-5eba-4127-8a20-34220ed08bc1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "aiBuilderAssisted": true,
@@ -1163,52 +1357,56 @@
     {
       "id": "422c46d8-f2d3-44ff-a1cf-e1bc4dffe86c",
       "name": "Registrar lead entrante",
-      "nodeIds": [
-        "10cc9763-3e47-4e94-9197-e407732fc91e",
-        "562432df-2e6a-4f6a-acfa-0a5d8ac8c5f9",
-        "78692eda-7fb4-416f-b4f7-5b9c2ca955e9",
-        "684434d4-5c77-4a6a-9f51-222997f0f7bc"
+      "nodeNames": [
+        "Normalizar datos",
+        "Crear lead (Pendiente)",
+        "Leer criterios VIP",
+        "Agrupar criterios"
       ],
       "description": "Normaliza el lead (formulario o mail), lo crea como Pendiente y trae los criterios VIP activos"
     },
     {
       "id": "ef1a0266-a3cc-40ce-8171-54cadf27715f",
       "name": "Clasificar lead",
-      "nodeIds": [
-        "d9f982e3-40a4-4959-aa0d-5fc3d5d27106",
-        "833d455d-9845-4d77-9afb-42c782bb05f5",
-        "eb3b0732-fae8-4a89-bf4e-f317023d4888"
+      "nodeNames": [
+        "Clasificar lead con IA",
+        "OpenAI (principal)",
+        "Claude (respaldo)",
+        "Formato JSON estricto"
       ],
       "description": "Puntúa el lead según los criterios VIP y devuelve el JSON estricto con borrador de respuesta"
     },
     {
       "id": "0836bad2-88c7-4571-b369-2ebbcffc5bb1",
       "name": "Guardar resultado",
-      "nodeIds": [
-        "0e165845-faa7-45af-8c74-e1455f7fb89b",
-        "eb9435fd-b592-4091-a30e-76ce4d1c7afb"
+      "nodeNames": [
+        "Guardar resultado IA en lead",
+        "Registrar log IA"
       ],
       "description": "Actualiza el lead a Procesado por IA y deja trazabilidad en el log"
     },
     {
-      "id": "e8ecca69-65bb-4323-b440-9c2b4b9590f8",
-      "name": "Aprobación humana",
-      "nodeIds": [
-        "a33df867-dca4-466b-be4e-b088de88ceb4",
-        "8eb6a7b2-1d12-4113-ad2d-e222e5d1511c",
-        "505149b4-6a38-4b7a-a95b-12b9d2ecc5dc",
-        "ea0e36d2-2f13-49e6-87c4-492586f4c808",
-        "a0f1f3d5-5046-4ca8-9a07-b5c2d42a8179"
-      ],
-      "description": "Un humano aprueba por email; solo entonces se contacta al cliente y el lead pasa a Aprobado"
-    },
-    {
       "id": "92cf27ce-866b-40dd-9001-75b69e64447a",
       "name": "Gestionar fallo de IA",
-      "nodeIds": [
-        "b6875385-d698-4cf1-8855-20ae91f8ddc1"
+      "nodeNames": [
+        "Registrar error IA"
       ],
       "description": "Si la IA falla, registra el error en el log; el lead queda Pendiente"
+    },
+    {
+      "id": "19879bf1-e35c-4fe9-9321-24d0b6e74397",
+      "name": "Aprobación humana",
+      "nodeNames": [
+        "¿Requiere aprobación humana?",
+        "Pedir aprobación por Gmail",
+        "¿Aprobado?",
+        "Enviar respuesta al cliente",
+        "Marcar Aprobado por Humano",
+        "Registrar rechazo",
+        "¿Tiene teléfono?",
+        "Enviar WhatsApp al cliente"
+      ],
+      "description": "Un humano aprueba o rechaza por email; si aprueba se responde al cliente por Gmail y, si dejó teléfono, por WhatsApp; si rechaza queda registrado"
     }
   ],
   "id": "SY31u1KQrKiI9eGi",
